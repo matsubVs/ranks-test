@@ -1,0 +1,31 @@
+version: "3.3"
+
+services:
+  pg:
+    image: postgres
+    restart: always
+    env_file:
+      - app.env
+    ports:
+      - "5432:5432"
+    container_name: pg
+    volumes:
+      - pg:/var/lib/postgresql/data
+
+
+  app:
+    build: .
+    command: poetry run gunicorn ranks.wsgi -b 127.0.0.1:8001
+    container_name: api_app
+    ports:
+      - 8001:8000
+    volumes:
+      - .:/app/
+    depends_on:
+      - pg
+    env_file:
+      - app.env
+
+volumes:
+  pg:
+   driver: local

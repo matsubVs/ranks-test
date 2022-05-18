@@ -21,9 +21,9 @@ class TaxAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'discount', 'tax', 'view_items_count')
+    list_display = ('id', 'discount', 'tax')
 
-    def view_items_count(self, obj):
-        return format_html(f'<p>{obj.items.count()}</p>')
+    # def view_items_count(self, obj):
+    #     return format_html(f'<p>{obj.items.count()}</p>')
 
-    view_items_count.short_description = "Количество товаров в заказе"
+    # view_items_count.short_description = "Количество товаров в заказе"

@@ -16,7 +16,7 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DOMAIN = 'localhost:8001/'
+DOMAIN = 'http://localhost:8001/'
 
 
 # Quick-start development settings - unsuitable for production
@@ -29,8 +29,8 @@ SECRET_KEY = 'django-insecure-^nbh0mf2z)!h!q0wjey_6b!a@hq1agmuqr&5%g@4n9=emui%jj
 DEBUG = True
 
 if DEBUG:
-    from dotenv import load_dotenv
-    load_dotenv()
+    from dotenv import load_dotenv, find_dotenv
+    load_dotenv(find_dotenv('app.env'))
 
 
 STRIPE_PUBLISHABLE_KEY=os.getenv('STRIPE_PUBLISHABLE_KEY')
@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'payment'
+    'payment',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -93,8 +94,8 @@ DATABASES = {
         'NAME': os.getenv("POSTGRES_DB"),
         'USER': os.getenv("POSTGRES_USER"),
         'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
-        'HOST': os.getenv("POSTGRES_HOST"),
-        'PORT': ''
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
@@ -134,7 +135,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]

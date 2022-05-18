@@ -1,5 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+import os
 
 from .models import Item, Order
 from django.conf import settings
@@ -7,6 +8,7 @@ from django.conf import settings
 DOMAIN = settings.DOMAIN
 
 import stripe
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 from django.http import JsonResponse
 from django.views.generic.base import TemplateView
@@ -30,8 +32,9 @@ def buy(request, item_id):
         }],
         mode='payment',
         payment_method_types=['card'],
-        success_url=DOMAIN + 'success?session_id={CHECKOUT_SESSION_ID}/',
+        success_url=DOMAIN + 'success/',
         cancel_url=DOMAIN + 'cancel/',
+        api_key=os.getenv('STRIPE_SECRET_KEY')
     )
 
     return JsonResponse({'sessionId': session.id})
@@ -68,7 +71,7 @@ def buy_order(request, order_id):
 @api_view(['GET'])
 def stripe_config(request):
     stripe_key = {'publicKey': settings.STRIPE_PUBLISHABLE_KEY}
-    return JsonResponse(stripe_key, safe=False)
+    return Response(stripe_key)
 
 
 def item(request):

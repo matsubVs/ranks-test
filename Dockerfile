@@ -8,9 +8,6 @@ WORKDIR /app/
 COPY poetry.lock pyproject.toml /app/
 
 RUN poetry install --no-root
-RUN poetry run python manage.py collectstatic
-RUN poetry run python manage.py makemigrations
-RUN poetry run python manage.py migrate
 COPY . /app/
 
 EXPOSE 8000

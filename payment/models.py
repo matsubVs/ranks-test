@@ -12,7 +12,7 @@ class Item(models.Model):
 
 	name = models.CharField(verbose_name="Наименование", max_length=255)
 	description = models.TextField(verbose_name="Описание", max_length=255, blank=True)
-	price = models.IntegerField(verbose_name="Цена", max_length=255)
+	price = models.IntegerField(verbose_name="Цена")
 	price_id = models.CharField(verbose_name="ID Цены", max_length=255, blank=True, null=True)
 	currency = models.CharField(verbose_name="Валюта", choices=CURRENCY_CHOICE, max_length=255)
 

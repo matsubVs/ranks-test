@@ -47,8 +47,8 @@ class Tax(models.Model):
 
 class Order(models.Model):
 	items = models.ManyToManyField(Item, verbose_name="Товары")
-	discount = models.ForeignKey(Discount, on_delete=models.CASCADE, verbose_name="Скидка")
-	tax = models.ForeignKey(Tax, on_delete=models.CASCADE, verbose_name="Налог")
+	discount = models.ForeignKey(Discount, on_delete=models.CASCADE, verbose_name="Скидка", null=True, blank=True)
+	tax = models.ForeignKey(Tax, on_delete=models.CASCADE, verbose_name="Налог", null=True, blank=True)
 
 	def __str__(self):
 		return f'Заказ №{self.id} - {self.items.count()} шт'

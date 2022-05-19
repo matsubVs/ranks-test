@@ -4,11 +4,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="https://js.stripe.com/v3/"></script>  <!-- new -->
-    <script src="{% static 'payment/main.js' %}"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <title>Title</title>
 </head>
 <body>
+    {% if item %}
+        <h1>{{ item.name }}</h1>
+        <p>{{ item.description }}</p>
+        <p>Стоимость: {{ item.price }} {{ item.currency }}</p>
+    {% else %}
 
+        {% for item in order.items.all %}
+            <h1>{{ item.name }}</h1>
+            <p>{{ item.description }}</p>
+            <p>Стоимость: {{ item.price }} {{ item.currency }}</p>
+        {% endfor %}
+
+        {% if order.discount %}
+            <p>Купон <{{ order.discount.name }}> будет применен на стрнице оплаты</p>
+        {% endif %}
+
+    {% endif %}
+    <button id="submitBtn"
+            data-id="{% if order %} {{ order.id }} {% else %} {{ item.id }} {% endif %}"
+            data-type="{{ type }}">
+        Купить!
+    </button>
+
+<script src="{% static 'payment/main.js' %}"></script>
 </body>
 </html>

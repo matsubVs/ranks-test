@@ -13,6 +13,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 from django.http import JsonResponse
 from django.views.generic.base import TemplateView
 from django.shortcuts import get_object_or_404
+from django.views.generic import ListView
 
 
 class HomePageView(TemplateView):
@@ -28,16 +29,15 @@ def buy(request, item_id):
             'name': req_item.name,
             'quantity': 1,
             'currency': req_item.currency,
-            'amount': str(req_item.price * 100),
+            'amount': req_item.price * 100,
         }],
         mode='payment',
         payment_method_types=['card'],
         success_url=DOMAIN + 'success/',
         cancel_url=DOMAIN + 'cancel/',
-        api_key=os.getenv('STRIPE_SECRET_KEY')
     )
 
-    return JsonResponse({'sessionId': session.id})
+    return Response({'sessionId': session.id})
 
 
 @api_view(['GET'])
@@ -49,8 +49,8 @@ def buy_order(request, order_id):
             "name": obj.name,
             "quantity": 1,
             "currency": obj.currency,
-            "amount": obj.amount,
-        } for obj in list(req_order.items)
+            "amount": obj.price * 100,
+        } for obj in req_order.items.all()
     ]
 
     session = stripe.checkout.Session.create(
@@ -61,11 +61,11 @@ def buy_order(request, order_id):
         tax_id_collection={
             'enabled': True,
         },
-        success_url='https://example.com/success?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url='https://example.com/cancel',
+        success_url=DOMAIN + 'success/',
+        cancel_url=DOMAIN + 'cancel/',
     )
 
-    return JsonResponse({'sessionId': session['id']})
+    return Response({'sessionId': session['id']})
 
 
 @api_view(['GET'])
@@ -74,12 +74,32 @@ def stripe_config(request):
     return Response(stripe_key)
 
 
-def item(request):
-    pass
+class ItemListView(ListView):
+
+    context_object_name = 'item'
+    template_name = 'payment/payment.html'
+
+    def get_queryset(self):
+        return Item.objects.get(pk=self.kwargs['item_id'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['type'] = 'item'
+        return context
 
 
-def order(request):
-    pass
+class OrderListView(ListView):
+
+    context_object_name = 'order'
+    template_name = 'payment/payment.html'
+
+    def get_queryset(self):
+        return Order.objects.get(pk=self.kwargs['order_id'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['type'] = 'order'
+        return context
 
 
 class SuccessPageView(TemplateView):

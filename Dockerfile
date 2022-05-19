@@ -1,13 +1,11 @@
-FROM python:3.10.4-bullseye
+FROM --platform=linux/amd64 python:3.10.4-bullseye
 LABEL maintainer="matsubus@mail.ru"
-
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 RUN pip install poetry
-
-WORKDIR /app/
-
-COPY poetry.lock pyproject.toml /app/
-
+WORKDIR /ranks/
+COPY poetry.lock pyproject.toml /ranks/
 RUN poetry install --no-root
-COPY . /app/
+RUN poetry run python manage.py migrate
+COPY . /ranks/
 
-EXPOSE 8000

@@ -16,22 +16,18 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DOMAIN = 'http://0.0.0.0:8000/'
+DOMAIN = 'http://0.0.0.0:1337/'
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^nbh0mf2z)!h!q0wjey_6b!a@hq1agmuqr&5%g@4n9=emui%jj'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 if DEBUG:
     from dotenv import load_dotenv, find_dotenv
     load_dotenv(find_dotenv('app.env'))
 
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+CSRF_TRUSTED_ORIGINS = ['http://0.0.0.0:1377']
 
 STRIPE_PUBLISHABLE_KEY=os.getenv('STRIPE_PUBLISHABLE_KEY')
 STRIPE_SECRET_KEY=os.getenv('STRIPE_SECRET_KEY')
@@ -135,11 +131,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
